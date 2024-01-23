@@ -28,18 +28,18 @@ If you would like to try the *ISLR* labs using these two packages instead of bas
   Be sure to check both your **User Library** and **System Library**.
 - If either of these are not currently listed, type the following in your **Console** pane, replacing `package_name` with the appropriate name, and  press Enter/Return afterwards.
   
-  ```{r install-example, eval = FALSE}
+ ```{r install-example, eval = FALSE}
   # Note: the "eval = FALSE" in the above line tells R not to evaluate this code
   install.packages("package_name")
-  ```
+ ```
   
 - Once you have verified that both `{tidyverse}` and `{tidymodels}` are installed, load these packages in the R chunk below titled `setup`.
   That is, type the following:
   
-  ```{r library-example, eval = FALSE}
+```{r library-example, eval = FALSE}
   library(tidyverse)
   library(tidymodels)
-  ```
+```
   
 - Run the `setup` code chunk and/or **knit** <img src="../README-img/knit-icon.png" alt="knit" width = "20"/> icon your Rmd document to verify that no errors occur.
 
@@ -61,10 +61,24 @@ In the R code chunk below titled `load-data`, you will type the code that reads 
 - Rather than downloading this file, uploading to RStudio, then reading it in, explore how to load this file directly from the provided URL with `readr::read_csv` (`{readr}` is part of `{tidyverse}`).
 - Assign this data set into a data frame named `hfi` (short for "Human Freedom Index").
 
+```{r load-data}
+hfi <- read_csv('~/R/STA_631/activity02-slr/hfi.csv')
+
+skimr::skim(hfi)
+
+```
+
 After doing this and viewing the loaded data, answer the following questions:
 
 1. What are the dimensions of the dataset?
+The dimensions of the dataset are:
+Rows: 1458
+Columns: 123
+
+
   What does each row represent?
+Each row represents a record.
+
 
 The dataset spans a lot of years.
 We are only interested in data from year 2016.
@@ -74,7 +88,8 @@ In the R code chunk below titled `hfi-2016`, type the code that does the followi
 - Assigns the result to a data frame named `hfi_2016`.
 
 ```{r hfi-2016}
-
+hfi_2016 <- hfi %>% 
+  filter(year== 2016)
 ```
 
 ### 1. Identify our research question(s)
@@ -84,6 +99,13 @@ Today's research question/goal is to predict a country's personal freedom score 
 
 For this activity we want to explore the relationship between the personal freedom score, `pf_score`, and the political pressures and controls on media content index,`pf_expression_control`.
 Specifically, we are going to use the political pressures and controls on media content index to predict a country's personal freedom score in 2016.
+
+```{r variables_of_int}
+skimr::skim(hfi_2016$pf_expression_control)
+skimr::skim(hfi_2016$pf_score)
+
+```
+
 
 ### 2. Explore the variables of interest
 
@@ -98,6 +120,23 @@ Answer the following questions (use your markdown skills) and complete the follo
 - In the R code chunk below titled `univariable-plots`, type the R code that displays this plot for `pf_expression_control`.
 
 ```{r distribution-plots}
+
+hfi_2016 %>% 
+  ggplot(aes(pf_score))+
+  geom_histogram(fill = "cornflowerblue", 
+                 color = "white")+
+  labs(title = "Distribution of Personal Freedom Score",
+       x = "Personal Freedom Score") +
+  theme_minimal()
+
+
+hfi_2016 %>% 
+  ggplot(aes(pf_expression_control))+
+  geom_histogram(fill = "cornflowerblue", 
+                 color = "white")+
+  labs(title = "Distribution of the Political Pressures and Controls on Media Content Index",
+       x = "Political Pressures and Controls on Media Content Index Score") +
+  theme_minimal()
 
 ```
 
