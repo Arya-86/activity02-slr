@@ -39,6 +39,8 @@ If you would like to try the *ISLR* labs using these two packages instead of bas
 ```{r library-example, eval = FALSE}
   library(tidyverse)
   library(tidymodels)
+library(flextable)
+library(psych)
 ```
   
 - Run the `setup` code chunk and/or **knit** <img src="../README-img/knit-icon.png" alt="knit" width = "20"/> icon your Rmd document to verify that no errors occur.
@@ -142,21 +144,30 @@ hfi_2016 %>%
 
 4. Comment on each of these two distributions. 
   Be sure to describe their centers, spread, shape, and any potential outliers.
-
+The first plot displays the spread of the distribution of Personal Freedom Score which is left skewed, there are a few outliers on the left side of the plot, indicating there are only a few countries with low 'personal freedom score'.
+The second plot shows the Distribution of the Political Pressures and Controls on Media Content Index, which has a pretty flat bell curve, indicating a normal distribution with most of the data points clustered around the center.
 
 
 3. What type of plot would you use to display the relationship between the personal freedom score, `pf_score`, and the political pressures and controls on media content index,`pf_expression_control`?
-
+I would use a scatterplot to display the relationship between the personal freedom score, `pf_score`, and the political pressures and controls on media content index,`pf_expression_control`
 
 
 - In the R code chunk below titled `relationship-plot`, plot this relationship using the variable `pf_expression_control` as the predictor/explanatory variable.
 
 ```{r relationship-plot}
+hfi_2016 %>% 
+  ggplot(aes(x= pf_expression_control, y = pf_score))+
+  geom_point(color = "cornflowerblue")+
+  labs(title = "Relationship between Political Pressures and Controls on Media Content on Personal Freedom Score",
+       x = "Political Pressures and Controls on Media Content Index Score",
+       y = "Personal Freedom Score") +
+  theme_minimal()
 
 ```
 
 4. Does the relationship look linear?
   If you knew a country's `pf_expression_control`, or its score out of 10, with 0 being the most, of political pressures and controls on media content, would you be comfortable using a linear model to predict the personal freedom score?
+Yes
 
 #### Challenge
 
@@ -169,6 +180,9 @@ What numerical summary would you use to describe the relationship between two nu
 (hint: explore the `cor` function from Base R)
 
 ```{r challenge}
+#summary of personal freedom score and Political Pressures and Controls on Media Content Index
+
+describe(hfi_2016[ , c('pf_expression_control', 'pf_score')], fast=TRUE)
 
 ```
 
@@ -183,7 +197,7 @@ To begin, we will create a `{parsnip}` specification for a linear model.
 
 - In the code chunk below titled `parsnip-spec`, replace "verbatim" with "r" just before the code chunk title.
 
-```{verbatim parsnip-spec}
+```{r parsnip-spec}
 lm_spec <- linear_reg() %>%
   set_mode("regression") %>%
   set_engine("lm")
@@ -205,7 +219,7 @@ Look at your knitted document to see how this syntax appears.
 
 - In the code chunk below titled `fit-lm`, replace "verbatim" with "r" just before the code chunk title. 
 
-```{verbatim fit-lm}
+```{r fit-lm}
 slr_mod <- lm_spec %>% 
   fit(pf_score ~ pf_expression_control, data = hfi_2016)
 
